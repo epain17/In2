@@ -22,13 +22,26 @@ class ProductsController extends Controller
     return response()->json($products);
 }
 
-public function inStore(Request $request, $id){
+
+
+public function listReviews()
+{
+  $reviews = Review::all()->first();
+  return response()->json($reviews);
+}
+
+public function inStore($id)
+{
   $product = Product::where('id', $id)->first();
+  $product = $product->toArray();
+
   $productInStores =Product_Store::all()->where('product_id', $id);
+  $productReviews = Review::all()->where('product_id', $id);
 
   $stores = Store::all();
-  $reviews = Review::all()->where('product_id', $id);
-  $storesWithProduct = array();
+  $storesWithProduct = [];
+
+  $product["reviews"] = $productReviews;
 
   foreach ($stores as $s)
   {
@@ -36,23 +49,23 @@ public function inStore(Request $request, $id){
     {
       if($s->id == $pS->store_id)
       {
-        array_push($storesWithProduct,$s);
+        $storesWithProduct[] = $s;
       }
     }
   }
 
-  // $store_id = $products->store_id;
-  return response()->json(array($product, $reviews, $storesWithProduct));
+  $product["stores"] = $storesWithProduct;
+
+  return response()->json($product);
 }
 
 public function create(Request $request)
 {
 
   $products = Product::create($request->all());
-return response()->json($products, 201);
+  return response()->json($products, 201);
 
 }
-
 public function delete($id)
 {
   Product::findOrFail($id)->delete();
