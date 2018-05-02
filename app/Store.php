@@ -8,7 +8,7 @@ class Store extends Model {
 
     public function products()
     {
-      return $table->hasOne('App\Product');
+      return $table->hasMany('App\Product');
     }
 
 

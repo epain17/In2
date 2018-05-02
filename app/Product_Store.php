@@ -8,13 +8,15 @@ class Product_Store extends Model {
 
     public function stores()
     {
-      return $table->hasMany('App/Stores');
+      return $table->hasOne('App/Stores');
     }
 
     public function products()
     {
-      return $table->hasMany('App/Product');
+      return $table->hasOne('App/Product');
     }
 
-
+    protected $fillable = [
+      'store_id', 'product_id'
+    ];
 }
